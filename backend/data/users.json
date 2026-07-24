@@ -1,0 +1,18 @@
+{
+  "users": [
+    {
+      "id": "usr_mrzgoz10xkm478",
+      "fullName": "emmanuel ojo",
+      "email": "dakratos18@gmail.com",
+      "phone": "+2348018226364",
+      "passwordHash": "$2b$10$LYuybgQYv.XPTVbzeL2DMu3dStRj40tMZil0FgtcE7ZkQkFhANrt6",
+      "balances": {
+        "ngn": 250000,
+        "btc": 0.015,
+        "eth": 0.42,
+        "usdt": 500
+      },
+      "createdAt": "2026-07-24T21:38:08.340Z"
+    }
+  ]
+}

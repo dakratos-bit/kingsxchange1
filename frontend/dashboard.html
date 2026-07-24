@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kingsxchange – Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="kingsxchange.css"/>
+  <style>
+    .dash-wrap { padding: 48px 6% 80px; }
+    .dash-loading { text-align: center; padding: 120px 0; color: var(--muted); }
+
+    .dash-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 32px; flex-wrap: wrap; gap: 16px;
+    }
+    .dash-greeting {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 34px; font-weight: 900;
+    }
+    .dash-sub { color: var(--muted); font-size: 14px; margin-top: 4px; }
+    .demo-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,75,75,0.1);
+      border: 1px solid rgba(255,75,75,0.3);
+      color: var(--red);
+      font-size: 11.5px; font-weight: 700;
+      padding: 4px 12px; border-radius: 20px;
+      margin-left: 10px;
+      vertical-align: middle;
+    }
+
+    .portfolio-card {
+      background: linear-gradient(135deg, #0D1F3C, #0A2050);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      margin-bottom: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+    .portfolio-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 20% 0%, rgba(0,212,255,0.15) 0%, transparent 60%);
+    }
+    .portfolio-label { font-size: 13px; color: var(--muted); position: relative; }
+    .portfolio-value {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 52px; font-weight: 900;
+      margin: 6px 0 4px;
+      position: relative;
+    }
+    .portfolio-change { font-size: 13px; color: var(--muted); position: relative; }
+
+    .grid-2 { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; align-items: start; }
+    @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
+    .card-title { font-size: 15px; font-weight: 700; margin-bottom: 18px; }
+
+    .holdings-table { width: 100%; border-collapse: collapse; }
+    .holdings-table th {
+      text-align: left; font-size: 11px; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .5px;
+      padding: 0 8px 10px; border-bottom: 1px solid var(--border);
+    }
+    .holdings-table td { padding: 14px 8px; border-bottom: 1px solid rgba(30,58,95,0.4); font-size: 14px; }
+    .holdings-table tr:last-child td { border-bottom: none; }
+    .asset-cell { display: flex; align-items: center; gap: 10px; }
+    .asset-icon { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+    .asset-name { font-weight: 600; }
+    .asset-sym { font-size: 11.5px; color: var(--muted); }
+    .num-cell { font-family: monospace; text-align: right; }
+
+    .account-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(30,58,95,0.4); font-size: 13.5px; }
+    .account-row:last-child { border-bottom: none; }
+    .account-row span:first-child { color: var(--muted); }
+
+    .action-btns { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+    .action-btns .btn { flex: 1; min-width: 120px; }
+
+    .logout-link { color: var(--red); text-decoration: none; font-size: 13.5px; font-weight: 600; cursor: pointer; }
+    .logout-link:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="kingsxchange.html" class="logo">Kings<span>xchange</span></a>
+  <ul class="nav-links">
+    <li><a href="kingsxchange.html#rates">Live Rates</a></li>
+    <li><a href="kingsxchange.html#how">How It Works</a></li>
+    <li><a href="kingsxchange.html#why">Why Us</a></li>
+    <li><a href="kingsxchange.html#contact">Support</a></li>
+  </ul>
+  <div class="nav-cta">
+    <a class="logout-link" id="logoutBtn">Log Out</a>
+  </div>
+</nav>
+
+<div id="loadingState" class="dash-loading">Loading your account...</div>
+
+<div class="dash-wrap" id="dashContent" style="display:none;">
+
+  <div class="dash-header">
+    <div>
+      <div class="dash-greeting">Welcome back, <span id="userFirstName"></span><span class="demo-badge">DEMO DATA</span></div>
+      <div class="dash-sub" id="userEmail"></div>
+    </div>
+  </div>
+
+  <div class="portfolio-card">
+    <div class="portfolio-label">Total Portfolio Value</div>
+    <div class="portfolio-value" id="portfolioValue">₦0</div>
+    <div class="portfolio-change" id="portfolioNote">Prices update automatically · demo balances, not real funds</div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Your Holdings</div>
+      <table class="holdings-table">
+        <thead>
+          <tr><th>Asset</th><th class="num-cell">Balance</th><th class="num-cell">Value (NGN)</th></tr>
+        </thead>
+        <tbody id="holdingsBody"></tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Account</div>
+      <div class="account-row"><span>Full Name</span><span id="accName"></span></div>
+      <div class="account-row"><span>Email</span><span id="accEmail"></span></div>
+      <div class="account-row"><span>Phone</span><span id="accPhone"></span></div>
+      <div class="action-btns">
+        <button class="btn btn-primary" onclick="alert('Deposits are not live yet — this is a demo dashboard.')">Deposit</button>
+        <button class="btn btn-ghost" onclick="alert('Withdrawals are not live yet — this is a demo dashboard.')">Withdraw</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const API_BASE = 'http://localhost:4000/api';
+
+  const assetMeta = {
+    ngn:  { name: 'Naira Cash',  icon: '₦', color: '#00E676', coingeckoId: null },
+    btc:  { name: 'Bitcoin',     icon: '₿', color: '#F7931A', coingeckoId: 'bitcoin' },
+    eth:  { name: 'Ethereum',    icon: 'Ξ', color: '#627EEA', coingeckoId: 'ethereum' },
+    usdt: { name: 'Tether',      icon: '₮', color: '#26A17B', coingeckoId: 'tether' },
+  };
+
+  const fallbackPrices = { bitcoin: 151717800, ethereum: 5215200, tether: 1590 };
+
+  function formatNgn(v) {
+    return '₦' + Math.round(v).toLocaleString('en-NG');
+  }
+
+  async function loadDashboard() {
+    let me;
+    try {
+      const res = await fetch(`${API_BASE}/me`, { credentials: 'include' });
+      if (!res.ok) { window.location.href = 'login.html'; return; }
+      me = await res.json();
+    } catch (err) {
+      window.location.href = 'login.html';
+      return;
+    }
+
+    const user = me.user;
+    document.getElementById('userFirstName').textContent = user.fullName.split(' ')[0];
+    document.getElementById('userEmail').textContent = user.email;
+    document.getElementById('accName').textContent = user.fullName;
+    document.getElementById('accEmail').textContent = user.email;
+    document.getElementById('accPhone').textContent = user.phone;
+
+    // Get live prices for valuing the crypto balances in NGN
+    let prices = {};
+    try {
+      const ids = 'bitcoin,ethereum,tether';
+      const priceRes = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=ngn`);
+      if (!priceRes.ok) throw new Error('price fetch failed');
+      const priceJson = await priceRes.json();
+      prices = { bitcoin: priceJson.bitcoin.ngn, ethereum: priceJson.ethereum.ngn, tether: priceJson.tether.ngn };
+    } catch (err) {
+      prices = fallbackPrices;
+      document.getElementById('portfolioNote').textContent = 'Showing last known prices — live rates unavailable right now · demo balances, not real funds';
+    }
+
+    const balances = user.balances;
+    let total = balances.ngn;
+    const rows = [];
+
+    Object.keys(assetMeta).forEach(key => {
+      const meta = assetMeta[key];
+      const amount = balances[key] || 0;
+      let valueNgn;
+      if (key === 'ngn') {
+        valueNgn = amount;
+      } else {
+        const price = prices[meta.coingeckoId] || 0;
+        valueNgn = amount * price;
+        total += valueNgn;
+      }
+      rows.push({ key, meta, amount, valueNgn });
+    });
+
+    document.getElementById('portfolioValue').textContent = formatNgn(total);
+
+    const tbody = document.getElementById('holdingsBody');
+    tbody.innerHTML = rows.map(r => `
+      <tr>
+        <td>
+          <div class="asset-cell">
+            <div class="asset-icon" style="background:${r.meta.color}22;color:${r.meta.color}">${r.meta.icon}</div>
+            <div>
+              <div class="asset-name">${r.meta.name}</div>
+              <div class="asset-sym">${r.key.toUpperCase()}</div>
+            </div>
+          </div>
+        </td>
+        <td class="num-cell">${r.key === 'ngn' ? formatNgn(r.amount) : r.amount}</td>
+        <td class="num-cell">${formatNgn(r.valueNgn)}</td>
+      </tr>
+    `).join('');
+
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('dashContent').style.display = 'block';
+  }
+
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    try {
+      await fetch(`${API_BASE}/logout`, { method: 'POST', credentials: 'include' });
+    } finally {
+      window.location.href = 'login.html';
+    }
+  });
+
+  loadDashboard();
+</script>
+
+</body>
+</html>

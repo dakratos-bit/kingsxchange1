@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kingsxchange – Log In or Sign Up</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="kingsxchange.css"/>
+  <style>
+    .auth-wrap {
+      min-height: calc(100vh - 130px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 6%;
+      position: relative;
+      overflow: hidden;
+    }
+    .auth-wrap::before {
+      content: '';
+      position: absolute;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(30,144,255,0.12) 0%, transparent 70%);
+      top: -150px; right: -150px;
+      pointer-events: none;
+    }
+    .auth-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px;
+      width: 100%;
+      max-width: 420px;
+      position: relative;
+    }
+    .auth-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 32px;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+    .auth-sub {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 28px;
+    }
+    .auth-tabs {
+      display: flex;
+      background: #060B16;
+      border-radius: 8px;
+      padding: 4px;
+      margin-bottom: 28px;
+    }
+    .auth-tab {
+      flex: 1;
+      padding: 9px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--muted);
+      border: none;
+      background: none;
+      transition: all .2s;
+    }
+    .auth-tab.on { background: var(--blue); color: #000; }
+    .auth-form { display: none; flex-direction: column; }
+    .auth-form.show { display: flex; }
+    .auth-field { margin-bottom: 16px; }
+    .auth-row { display: flex; gap: 12px; }
+    .auth-row .auth-field { flex: 1; }
+    .phone-wrap { display: flex; }
+    .phone-prefix {
+      display: flex; align-items: center;
+      padding: 0 14px;
+      background: #060B16;
+      border: 1px solid var(--border);
+      border-right: none;
+      border-radius: 8px 0 0 8px;
+      color: var(--cyan);
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .phone-wrap .input-wrap { border-radius: 0 8px 8px 0; flex: 1; }
+    .show-pass {
+      background: none; border: none;
+      color: var(--muted); font-size: 12px; font-weight: 600;
+      cursor: pointer; padding: 8px 14px;
+    }
+    .show-pass:hover { color: var(--cyan); }
+    .auth-options {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 13px; color: var(--muted); margin-bottom: 22px;
+    }
+    .auth-options a { color: var(--cyan); text-decoration: none; }
+    .auth-options a:hover { text-decoration: underline; }
+    .auth-check {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 12.5px; color: var(--muted); margin-bottom: 22px; line-height: 1.5;
+    }
+    .auth-check a { color: var(--cyan); text-decoration: none; }
+    .auth-switch { text-align: center; font-size: 13.5px; color: var(--muted); margin-top: 20px; }
+    .auth-switch a { color: var(--cyan); text-decoration: none; font-weight: 600; cursor: pointer; }
+    .strength-bars { display: flex; gap: 4px; margin-top: 8px; }
+    .strength-bars div { height: 4px; flex: 1; border-radius: 2px; background: var(--border); transition: background .2s; }
+    .strength-note { font-size: 11.5px; color: var(--muted); margin-top: 6px; }
+    .err-msg { font-size: 11.5px; color: var(--red); margin-top: 5px; display: none; }
+    .auth-field.bad input { border-color: var(--red); }
+    .auth-field.bad .err-msg { display: block; }
+    .form-msg { font-size: 12.5px; margin-top: 12px; display: none; text-align: center; }
+    .form-msg.error { color: var(--red); }
+    .form-msg.success { color: var(--green); }
+    .back-home { font-size: 13px; color: var(--muted); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 18px; }
+    .back-home:hover { color: var(--cyan); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="kingsxchange.html" class="logo">Kings<span>xchange</span></a>
+  <ul class="nav-links">
+    <li><a href="kingsxchange.html#rates">Live Rates</a></li>
+    <li><a href="kingsxchange.html#how">How It Works</a></li>
+    <li><a href="kingsxchange.html#why">Why Us</a></li>
+    <li><a href="kingsxchange.html#contact">Support</a></li>
+  </ul>
+  <div class="nav-cta">
+    <a href="kingsxchange.html" class="btn btn-ghost">Back to Home</a>
+  </div>
+</nav>
+
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-title">Welcome to Kingsxchange</div>
+    <div class="auth-sub">Trade crypto in naira, securely and instantly.</div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab on" id="loginTabBtn" onclick="showAuthTab('login')">Log In</button>
+      <button class="auth-tab" id="signupTabBtn" onclick="showAuthTab('signup')">Sign Up</button>
+    </div>
+
+    <!-- LOG IN -->
+    <form class="auth-form show" id="loginForm" novalidate>
+      <div class="auth-field" id="loginEmailField">
+        <label class="form-label">Email or Username</label>
+        <div class="input-wrap">
+          <input type="text" id="loginEmail" placeholder="name@example.com" required/>
+        </div>
+        <div class="err-msg">Enter a valid email or username.</div>
+      </div>
+
+      <div class="auth-field" id="loginPassField">
+        <label class="form-label">Password</label>
+        <div class="input-wrap">
+          <input type="password" id="loginPassword" placeholder="Enter your password" required/>
+          <button type="button" class="show-pass" data-target="loginPassword">SHOW</button>
+        </div>
+        <div class="err-msg">Password is required.</div>
+      </div>
+
+      <div class="auth-options">
+        <label style="display:flex;align-items:center;gap:6px;">
+          <input type="checkbox" id="rememberMe"/> Remember me
+        </label>
+        <a href="#">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width:100%;padding:13px;font-size:15px;border-radius:10px;">Log In</button>
+      <div class="form-msg" id="loginMsg"></div>
+    </form>
+
+    <!-- SIGN UP -->
+    <form class="auth-form" id="signupForm" novalidate>
+      <div class="auth-field" id="fullNameField">
+        <label class="form-label">Full Name</label>
+        <div class="input-wrap">
+          <input type="text" id="fullName" placeholder="e.g. Adaeze Obi" required/>
+        </div>
+        <div class="err-msg">Enter your full name.</div>
+      </div>
+
+      <div class="auth-field" id="signupEmailField">
+        <label class="form-label">Email</label>
+        <div class="input-wrap">
+          <input type="email" id="signupEmail" placeholder="name@example.com" required/>
+        </div>
+        <div class="err-msg">Enter a valid email address.</div>
+      </div>
+
+      <div class="auth-field" id="signupPhoneField">
+        <label class="form-label">Phone Number</label>
+        <div class="phone-wrap">
+          <div class="phone-prefix">+234</div>
+          <div class="input-wrap">
+            <input type="tel" id="signupPhone" placeholder="801 234 5678" required/>
+          </div>
+        </div>
+        <div class="err-msg">Enter a valid Nigerian phone number.</div>
+      </div>
+
+      <div class="auth-field" id="signupPassField">
+        <label class="form-label">Password</label>
+        <div class="input-wrap">
+          <input type="password" id="signupPassword" placeholder="Create a password" required/>
+          <button type="button" class="show-pass" data-target="signupPassword">SHOW</button>
+        </div>
+        <div class="strength-bars">
+          <div data-bar="1"></div><div data-bar="2"></div><div data-bar="3"></div><div data-bar="4"></div>
+        </div>
+        <div class="strength-note" id="strengthNote">Use 8+ characters with numbers and symbols.</div>
+      </div>
+
+      <label class="auth-check">
+        <input type="checkbox" id="agreeTerms" required/>
+        <span>I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</span>
+      </label>
+
+      <button type="submit" class="btn btn-primary" style="width:100%;padding:13px;font-size:15px;border-radius:10px;">Create Account</button>
+      <div class="form-msg" id="signupMsg"></div>
+    </form>
+
+    <div class="auth-switch" id="switchLine">
+      New to Kingsxchange? <a onclick="showAuthTab('signup')">Create an account</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-bottom" style="border-top:none;padding-top:0;justify-content:center;">
+    <span>© 2026 Kingsxchange. All rights reserved.</span>
+  </div>
+</footer>
+
+<script>
+  function showAuthTab(tab) {
+    const loginBtn = document.getElementById('loginTabBtn');
+    const signupBtn = document.getElementById('signupTabBtn');
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+    const switchLine = document.getElementById('switchLine');
+
+    if (tab === 'login') {
+      loginBtn.classList.add('on'); signupBtn.classList.remove('on');
+      loginForm.classList.add('show'); signupForm.classList.remove('show');
+      switchLine.innerHTML = 'New to Kingsxchange? <a onclick="showAuthTab(\'signup\')">Create an account</a>';
+    } else {
+      signupBtn.classList.add('on'); loginBtn.classList.remove('on');
+      signupForm.classList.add('show'); loginForm.classList.remove('show');
+      switchLine.innerHTML = 'Already have an account? <a onclick="showAuthTab(\'login\')">Log in</a>';
+    }
+  }
+
+  document.querySelectorAll('.show-pass').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.target);
+      const hidden = target.type === 'password';
+      target.type = hidden ? 'text' : 'password';
+      btn.textContent = hidden ? 'HIDE' : 'SHOW';
+    });
+  });
+
+  const strengthColors = ['#FF4B4B', '#F3BA2F', '#1E90FF', '#00E676'];
+  const strengthLabels = ['Weak', 'Fair', 'Good', 'Strong'];
+  const signupPassword = document.getElementById('signupPassword');
+  const bars = document.querySelectorAll('.strength-bars div');
+  const note = document.getElementById('strengthNote');
+
+  signupPassword.addEventListener('input', () => {
+    const val = signupPassword.value;
+    let score = 0;
+    if (val.length >= 8) score++;
+    if (/[A-Z]/.test(val) && /[a-z]/.test(val)) score++;
+    if (/\d/.test(val)) score++;
+    if (/[^A-Za-z0-9]/.test(val)) score++;
+    if (val.length === 0) score = 0;
+    bars.forEach((b, i) => b.style.background = i < score ? strengthColors[Math.max(score-1,0)] : 'var(--border)');
+    note.textContent = val.length === 0 ? 'Use 8+ characters with numbers and symbols.' : strengthLabels[Math.max(score-1,0)];
+  });
+
+  // Point this at your deployed backend once it's live (e.g. https://api.kingsxchange.ng)
+  const API_BASE = 'http://localhost:4000/api';
+
+  function showMsg(id, text, type) {
+    const el = document.getElementById(id);
+    el.textContent = text;
+    el.className = 'form-msg ' + type;
+    el.style.display = 'block';
+  }
+
+  function markInvalid(id, invalid) { document.getElementById(id).classList.toggle('bad', invalid); }
+
+  // Strips spaces/dashes and a leading 0, since the field already shows a fixed +234 prefix.
+  // Accepts "0801 234 5678", "801-234-5678", "8012345678" — all normalize to "8012345678".
+  function normalizeNgPhone(raw) {
+    let digits = (raw || '').replace(/\D/g, '');
+    if (digits.startsWith('0')) digits = digits.slice(1);
+    return digits;
+  }
+
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail');
+    const pass = document.getElementById('loginPassword');
+    let ok = true;
+    if (!email.value.trim()) { markInvalid('loginEmailField', true); ok = false; } else markInvalid('loginEmailField', false);
+    if (!pass.value) { markInvalid('loginPassField', true); ok = false; } else markInvalid('loginPassField', false);
+    if (!ok) return;
+
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.disabled = true; btn.textContent = 'Logging in...';
+
+    try {
+      const res = await fetch(`${API_BASE}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email: email.value.trim(), password: pass.value }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        showMsg('loginMsg', data.error || 'Login failed.', 'error');
+      } else {
+        showMsg('loginMsg', `Welcome back, ${data.user.fullName.split(' ')[0]}.`, 'success');
+        setTimeout(() => { window.location.href = 'dashboard.html'; }, 600);
+      }
+    } catch (err) {
+      showMsg('loginMsg', 'Could not reach the server. Is the backend running?', 'error');
+    } finally {
+      btn.disabled = false; btn.textContent = 'Log In';
+    }
+  });
+
+  document.getElementById('signupForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('fullName');
+    const email = document.getElementById('signupEmail');
+    const phone = document.getElementById('signupPhone');
+    const pass = document.getElementById('signupPassword');
+    const terms = document.getElementById('agreeTerms');
+    let ok = true;
+
+    if (!name.value.trim()) { markInvalid('fullNameField', true); ok = false; } else markInvalid('fullNameField', false);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) { markInvalid('signupEmailField', true); ok = false; } else markInvalid('signupEmailField', false);
+    if (!/^\d{10}$/.test(normalizeNgPhone(phone.value))) { markInvalid('signupPhoneField', true); ok = false; } else markInvalid('signupPhoneField', false);
+    if (pass.value.length < 8) { markInvalid('signupPassField', true); ok = false; } else markInvalid('signupPassField', false);
+    if (!terms.checked) { ok = false; showMsg('signupMsg', 'Please agree to the Terms of Service.', 'error'); }
+
+    if (!ok) return;
+
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.disabled = true; btn.textContent = 'Creating account...';
+
+    try {
+      const res = await fetch(`${API_BASE}/signup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          fullName: name.value.trim(),
+          email: email.value.trim(),
+          phone: '+234' + normalizeNgPhone(phone.value),
+          password: pass.value,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        showMsg('signupMsg', data.error || 'Signup failed.', 'error');
+      } else {
+        showMsg('signupMsg', `Account created. Welcome, ${data.user.fullName.split(' ')[0]}.`, 'success');
+        setTimeout(() => { window.location.href = 'dashboard.html'; }, 600);
+      }
+    } catch (err) {
+      showMsg('signupMsg', 'Could not reach the server. Is the backend running?', 'error');
+    } finally {
+      btn.disabled = false; btn.textContent = 'Create Account';
+    }
+  });
+</script>
+
+</body>
+</html>

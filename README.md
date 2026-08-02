@@ -23,10 +23,6 @@ Blue-themed UI tailored for a Nigerian crypto audience, with layout designed to 
 
 Work in progress — currently focused on [add: what you're building next, e.g. login/signup flow, backend integration, etc.]
 
-## What I Learned
-
-Building this project helped me get hands-on with responsive layout techniques (CSS Grid and Flexbox), working with live/dynamic data on the frontend, and designing for a specific target audience's needs.
-
 ## Live Demo
 
 Not yet hosted — [add link here once deployed, e.g. via Netlify/Vercel]

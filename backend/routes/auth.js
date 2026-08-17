@@ -23,8 +23,8 @@ function setAuthCookie(res, user) {
   const token = jwt.sign({ sub: user.id }, JWT_SECRET, { expiresIn: TOKEN_EXPIRY });
   res.cookie('kx_session', token, {
     httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'none',
+    secure: true,
     maxAge: COOKIE_MAX_AGE,
   });
 }
